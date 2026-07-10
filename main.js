@@ -121,6 +121,34 @@ const observer = new IntersectionObserver(entries => {
 
 revealEls.forEach(el => observer.observe(el));
 
+// ── Language Switcher ──
+const btnEn = document.getElementById('btnEn');
+const btnAm = document.getElementById('btnAm');
+
+function applyLang(lang) {
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (!val) return;
+    // preserve child elements (e.g. <strong>) by only updating text nodes when no child elements
+    if (el.children.length === 0) {
+      el.textContent = val;
+    } else {
+      el.innerHTML = val;
+    }
+  });
+  document.documentElement.lang = lang === 'am' ? 'am' : 'en';
+  btnEn.classList.toggle('active', lang === 'en');
+  btnAm.classList.toggle('active', lang === 'am');
+  localStorage.setItem('lang', lang);
+}
+
+btnEn.addEventListener('click', () => applyLang('en'));
+btnAm.addEventListener('click', () => applyLang('am'));
+
+// restore saved language
+const savedLang = localStorage.getItem('lang');
+if (savedLang === 'am') applyLang('am');
+
 // ── Theme Toggle ──
 const themeBtn = document.getElementById('themeToggle');
 const icon = themeBtn.querySelector('.theme-icon');
