@@ -121,34 +121,6 @@ const observer = new IntersectionObserver(entries => {
 
 revealEls.forEach(el => observer.observe(el));
 
-// ── Language Switcher ──
-const btnEn = document.getElementById('btnEn');
-const btnAm = document.getElementById('btnAm');
-
-function applyLang(lang) {
-  document.querySelectorAll('[data-en]').forEach(el => {
-    const val = el.getAttribute('data-' + lang);
-    if (!val) return;
-    // preserve child elements (e.g. <strong>) by only updating text nodes when no child elements
-    if (el.children.length === 0) {
-      el.textContent = val;
-    } else {
-      el.innerHTML = val;
-    }
-  });
-  document.documentElement.lang = lang === 'am' ? 'am' : 'en';
-  btnEn.classList.toggle('active', lang === 'en');
-  btnAm.classList.toggle('active', lang === 'am');
-  localStorage.setItem('lang', lang);
-}
-
-btnEn.addEventListener('click', () => applyLang('en'));
-btnAm.addEventListener('click', () => applyLang('am'));
-
-// restore saved language
-const savedLang = localStorage.getItem('lang');
-if (savedLang === 'am') applyLang('am');
-
 // ── Theme Toggle ──
 const themeBtn = document.getElementById('themeToggle');
 const icon = themeBtn.querySelector('.theme-icon');
@@ -160,6 +132,42 @@ themeBtn.addEventListener('click', () => {
   const isLight = document.body.classList.toggle('light');
   icon.textContent = isLight ? '🌙' : '☀️';
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
+
+// ── Skill sub-topic smooth animation ──
+document.querySelectorAll('.sub-topic').forEach(detail => {
+  const summary = detail.querySelector('summary');
+  const content = detail.querySelector('.sub-list');
+  content.style.overflow = 'hidden';
+
+  summary.addEventListener('click', e => {
+    e.preventDefault();
+    if (detail.open) {
+      const h = content.scrollHeight;
+      content.style.height = h + 'px';
+      requestAnimationFrame(() => {
+        content.style.transition = 'height .28s ease';
+        content.style.height = '0';
+      });
+      content.addEventListener('transitionend', () => {
+        detail.removeAttribute('open');
+        content.style.height = '';
+        content.style.transition = '';
+      }, { once: true });
+    } else {
+      detail.setAttribute('open', '');
+      const h = content.scrollHeight;
+      content.style.height = '0';
+      requestAnimationFrame(() => {
+        content.style.transition = 'height .28s ease';
+        content.style.height = h + 'px';
+      });
+      content.addEventListener('transitionend', () => {
+        content.style.height = '';
+        content.style.transition = '';
+      }, { once: true });
+    }
+  });
 });
 
 // ── Active nav highlight on scroll ──
