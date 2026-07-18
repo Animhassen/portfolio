@@ -628,6 +628,18 @@ body.light .project-card.featured { background: linear-gradient(135deg, #ffffff 
 
 .cert-card:hover { border-color: var(--accent); transform: translateY(-3px); }
 
+.cert-link { cursor: pointer; }
+.cert-link:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(0,212,255,.12); }
+
+.cert-view {
+  display: inline-block;
+  margin-top: .4rem;
+  font-size: .75rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  opacity: .8;
+}
+
 .cert-icon { font-size: 1.6rem; flex-shrink: 0; }
 
 .cert-card h3 {
